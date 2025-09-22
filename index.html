@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Contabilidade II - Integração Contábil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #404040 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #c0c0c0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-header {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(255, 215, 0, 0.1) 100%);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header:hover {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.15) 0%, rgba(255, 215, 0, 0.15) 100%);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: #c0c0c0;
+            transition: transform 0.3s ease;
+        }
+
+        .section.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .section.active .section-content {
+            max-height: 3000px;
+            transition: max-height 0.6s ease-in;
+        }
+
+        .content-inner {
+            padding: 25px;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border-left: 4px solid #90EE90;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .subsection:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .subsection-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .subsection-header:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .subsection h3 {
+            color: #ffd700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .subsection h3::before {
+            content: "▶";
+            color: #90EE90;
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        .subsection-toggle {
+            font-size: 1rem;
+            color: #c0c0c0;
+            transition: transform 0.3s ease;
+        }
+
+        .subsection.active .subsection-toggle {
+            transform: rotate(180deg);
+        }
+
+        .subsection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+        .subsection.active .subsection-content {
+            max-height: 2000px;
+            transition: max-height 0.6s ease-in;
+        }
+
+        .subsection-inner {
+            padding: 0 20px 20px 20px;
+        }
+
+        .step-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step-item {
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #c0c0c0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-left-color: #ffd700;
+            transform: translateX(3px);
+        }
+
+        .step-item::before {
+            content: "✓";
+            color: #90EE90;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .path-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #ffd700;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .support-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #90EE90 0%, #98FB98 100%);
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(144, 238, 144, 0.3);
+            cursor: pointer;
+        }
+
+        .support-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(144, 238, 144, 0.5);
+            background: linear-gradient(135deg, #98FB98 0%, #90EE90 100%);
+        }
+
+        .navigation {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.3);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .nav-dot:hover,
+        .nav-dot.active {
+            background: #ffd700;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Modal Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 900px;
+            height: 80%;
+            max-height: 600px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(144, 238, 144, 0.1) 100%);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            color: #ffd700;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #c0c0c0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffd700;
+        }
+
+        .modal-body {
+            height: calc(100% - 80px);
+            overflow: hidden;
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0 0 15px 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .navigation {
+                display: none;
+            }
+
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .modal-content {
+                width: 95%;
+                height: 85%;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sub-step-header {
+            color: #c0c0c0;
+            margin: 15px 0 10px 0;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .sub-step-header-green {
+            color: #90EE90;
+            margin: 10px 0 5px 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header fade-in">
+            <h1>Manual de Contabilidade II</h1>
+            <p>Integração Contábil - Escrita Fiscal e Folha de Pagamentos</p>
+        </header>
+
+        <main>
+            <!-- Seção 1: Integração Contábil - Escrita Fiscal -->
+            <section class="section fade-in" id="section-1">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2 class="section-title">Integração Contábil - Escrita Fiscal</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="content-inner">
+                        <!-- Documentos Fiscais -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Integração Contábil dos Documentos Fiscais</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <h4 class="sub-step-header">Automática</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Ocorre no momento que o arquivo XML é importado</li>
+                                        <li class="step-item">Exceto Sat CF-e que deve ser integrado de outra forma</li>
+                                    </ul>
+
+                                    <h4 class="sub-step-header">Acumuladores</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Configuração para integração das notas fiscais</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Arquivos/Acumuladores</span> aba <span class="path-code">//Contabilidade/Notas</span> (informar as contas contábeis)</li>
+                                        <li class="step-item">Já vem pré configurado (Plano padrão)</li>
+                                    </ul>
+                                    <a href="#" class="support-link" onclick="openModal('Documentação - Integração de Notas Fiscais', 'https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=7630&palavraChave=contabiliza%C3%A7%C3%A3o]&modulosSelecionados=0&intencaoID=0')">📖 Ver Documentação</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Impostos Apurados -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Integração Contábil dos Impostos Apurados</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <h4 class="sub-step-header">Cadastro do Imposto</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Configuração das contas para contabilizar os impostos apurados</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Arquivos/Impostos</span> aba <span class="path-code">//Contabilidade/Geral</span></li>
+                                        <li class="step-item">Já vem pré configurado (Plano padrão)</li>
+                                    </ul>
+
+                                    <h4 class="sub-step-header">Rotina de Integração</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Após apuração, subir os impostos para contabilidade</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Movimentos/Integração Contábil</span></li>
+                                        <li class="step-item">É possível realizar a automação através de rotina automática</li>
+                                    </ul>
+
+                                    <h4 class="sub-step-header">Integra Pagamento do Imposto via E-CAC</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">É possível integrar o imposto para o balancete importando diretamente do e-cac</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Movimentos/Pagamento de impostos via ecac/Escrita Fiscal</span></li>
+                                    </ul>
+                                    <a href="#" class="support-link" onclick="openModal('Documentação - Impostos E-CAC', 'https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=2444&palavraChave=imposto%20ecac&modulosSelecionados=2,26&intencaoID=0')">📖 Ver Documentação</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Duplicatas -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Integração Contábil de Duplicatas de Clientes e Fornecedores</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <h4 class="sub-step-header">Acumulador</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Configuração da conta de pagamento/recebimento da duplicata</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Arquivos/Acumuladores</span> aba <span class="path-code">//Contabilidade/Parcelas</span></li>
+                                    </ul>
+
+                                    <h4 class="sub-step-header">Rotina de Integração de Duplicatas</h4>
+                                    
+                                    <h5 class="sub-step-header-green">Entradas</h5>
+                                    <ul class="step-list">
+                                        <li class="step-item">Acesse: <span class="path-code">//Movimentos/Baixas/Entradas</span></li>
+                                    </ul>
+                                    <a href="#" class="support-link" onclick="openModal('Documentação - Baixas de Entradas', 'https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=173&palavraChave=baixa%20entrada&modulosSelecionados=0&intencaoID=0')">📖 Ver Documentação - Entradas</a>
+
+                                    <h5 class="sub-step-header-green">Saídas</h5>
+                                    <ul class="step-list">
+                                        <li class="step-item">Acesse: <span class="path-code">//Movimentos/Baixas/Saídas</span></li>
+                                    </ul>
+                                    <a href="#" class="support-link" onclick="openModal('Documentação - Baixas de Saídas', 'https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=197&palavraChave=baixa%20sa%C3%ADda&modulosSelecionados=0&intencaoID=0')">📖 Ver Documentação - Saídas</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Regeração -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Regeração</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <h4 class="sub-step-header">Regerar Notas Fiscais e Impostos</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Rotina para integrar notas que não subiram automaticamente para Contabilidade e impostos</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Utilitários/Regerar/Lançamentos Contábeis</span></li>
+                                    </ul>
+                                    <a href="#" class="support-link" onclick="openModal('Documentação - Regerar Lançamentos', 'https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=2671&palavraChave=regerar&modulosSelecionados=0&intencaoID=0')">📖 Ver Documentação</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção 2: Integração Contábil - Folha de Pagamentos -->
+            <section class="section fade-in" id="section-2">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2 class="section-title">Integração Contábil - Folha de Pagamentos</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="content-inner">
+                        <!-- Parâmetros da Empresa -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Parâmetros da Empresa</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <ul class="step-list">
+                                        <li class="step-item">Marcar para integrar a folha para Contabilidade</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Controle/Parâmetros</span> aba <span class="path-code">//Contabilidade</span> (configurar os campos)</li>
+                                    </ul>
+                                    <a href="#" class="support-link" onclick="openModal('Documentação - Parâmetros da Folha', 'https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=822')">📖 Ver Documentação</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rotina de Integração -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Rotina de Integração</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <p style="color: #c0c0c0; margin-bottom: 15px;">Realizada mensalmente após fechamento da folha de pagamentos</p>
+                                    
+                                    <h4 class="sub-step-header">Integrar Folha</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Acesse: <span class="path-code">//Processos/Integração contábil</span></li>
+                                        <li class="step-item">Informar período</li>
+                                        <li class="step-item">Marcar opções necessárias e gerar</li>
+                                    </ul>
+
+                                    <h4 class="sub-step-header">Configurar Novas Rubricas</h4>
+                                    <ul class="step-list">
+                                        <li class="step-item">Sempre que for criada nova rubrica</li>
+                                        <li class="step-item">Já vem configurado para rubricas existentes</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Arquivo/Contabilidade/Configurar integração</span></li>
+                                        <li class="step-item">Informar as contas contábeis</li>
+                                        <li class="step-item">Selecionar a rubrica recém criada</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Integra Pagamento da Folha -->
+                        <div class="subsection">
+                            <div class="subsection-header" onclick="toggleSubsection(this)">
+                                <h3>Integra Pagamento da Folha</h3>
+                                <span class="subsection-toggle">▼</span>
+                            </div>
+                            <div class="subsection-content">
+                                <div class="subsection-inner">
+                                    <ul class="step-list">
+                                        <li class="step-item">Integrar os pagamentos da folha e encargos para Contabilidade</li>
+                                        <li class="step-item">Acesse: <span class="path-code">//Processos/Pagamentos</span></li>
+                                        <li class="step-item">Selecionar a folha ou encargo</li>
+                                        <li class="step-item">Clicar em Pagar</li>
+                                        <li class="step-item">Após informar data e valor pago, clicar em Gerar do quadro "Lançamentos Contábeis"</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Navegação lateral -->
+    <nav class="navigation">
+        <div class="nav-dot active" onclick="scrollToSection('section-1')"></div>
+        <div class="nav-dot" onclick="scrollToSection('section-2')"></div>
+    </nav>
+
+    <!-- Botão voltar ao topo -->
+    <button class="scroll-to-top" onclick="scrollToTop()">↑</button>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Documentação</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="modal-iframe" class="modal-iframe" src=""></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle de seções principais
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('active');
+            updateNavigation();
+        }
+
+        // Toggle de subseções
+        function toggleSubsection(header) {
+            const subsection = header.parentElement;
+            subsection.classList.toggle('active');
+        }
+
+        // Scroll para seção
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+            
+            // Abrir seção se estiver fechada
+            if (!section.classList.contains('active')) {
+                section.classList.add('active');
+            }
+            
+            updateNavigation();
+        }
+
+        // Scroll para o topo
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Atualizar navegação
+        function updateNavigation() {
+            const sections = document.querySelectorAll('.section');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+                
+                if (isVisible) {
+                    navDots.forEach(dot => dot.classList.remove('active'));
+                    if (navDots[index]) {
+                        navDots[index].classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // Mostrar/ocultar botão de voltar ao topo
+        function toggleScrollButton() {
+            const scrollButton = document.querySelector('.scroll-to-top');
+            if (window.pageYOffset > 300) {
+                scrollButton.classList.add('visible');
+            } else {
+                scrollButton.classList.remove('visible');
+            }
+        }
+
+        // Abrir modal popup
+        function openModal(title, url) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalIframe = document.getElementById('modal-iframe');
+            
+            modalTitle.textContent = title;
+            modalIframe.src = url;
+            modal.classList.add('active');
+            
+            // Prevenir scroll do body
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Fechar modal popup
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const modalIframe = document.getElementById('modal-iframe');
+            
+            modal.classList.remove('active');
+            modalIframe.src = '';
+            
+            // Restaurar scroll do body
+            document.body.style.overflow = 'auto';
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateNavigation();
+            toggleScrollButton();
+        });
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('modal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Fechar modal com ESC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Animação de entrada
+        window.addEventListener('load', () => {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+
+        // Efeitos de hover nos links
+        document.querySelectorAll('.support-link').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.05)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(-2px) scale(1)';
+            });
+        });
+
+        // Efeito de parallax sutil no fundo
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.body;
+            const speed = scrolled * 0.5;
+            parallax.style.backgroundPosition = `center ${speed}px`;
+        });
+    </script>
+</body>
+</html>
+
